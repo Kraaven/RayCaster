@@ -1,0 +1,35 @@
+{
+    "tasks": [
+        {
+            "label": "Build and Run",
+            "type": "shell",
+            "command": "make",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Play",
+            "type": "shell",
+            "command": "make play",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make clean",
+            "problemMatcher": [],
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
