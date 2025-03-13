@@ -84,6 +84,7 @@
 
 #ifndef RAYLIB_H
 #define RAYLIB_H
+#define GRAPHICS_API_OPENGL_43
 
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
 
