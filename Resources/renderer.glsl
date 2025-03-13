@@ -9,29 +9,25 @@ out vec4 finalColor;
 
 // Input uniform texture containing ray distances
 uniform sampler2D hitTexture;
-uniform float screenWidth;
 
 void main()
 {
-    float texCoordX = gl_FragCoord.x / screenWidth;
-    vec2 distance_data = vec2(gl_FragCoord.x, 0.0);
-    vec4 DistanceValue = texture(hitTexture, distance_data/800);
-    float Distance  = DistanceValue.x + DistanceValue.y + DistanceValue.z;
-    Distance = Distance/2;
+    // Normalize texture coordinates
+    vec2 distance_data = vec2(gl_FragCoord.x / 800, 0.0);
+    vec4 DistanceValue = texture(hitTexture, distance_data);
 
-    float PixelDeviation = 0;
-    if(gl_FragCoord.y > 225){
-        //PixelDeviation -= gl_FragCoord.y;
-        finalColor = vec4(1.0,1.0,1.0,1.0);
+    // Extract distance ( distance is stored as sum of all 3 channels)
+    float Distance = DistanceValue.x + DistanceValue.y + DistanceValue.z;
+
+    // Compute pixel deviation from screen center
+    float screenCenter = 450 / 2.0;
+    float PixelDeviation = abs(gl_FragCoord.y - screenCenter);
+
+    // Set final color based on distance and deviation
+
+    if (PixelDeviation * 4 < (225/ Distance)) {
+        finalColor = vec4(1.0, 1.0, 1.0, abs((Distance/225)) * 100); // White
+    } else {
+        finalColor = vec4(0.0, 0.0, 0.0, 1.0); // Black
     }
-    else{
-        //PixelDeviation = 255 - gl_FragCoord.y;
-        finalColor = vec4(0.0,0.0,0.0,0.0);
-    }
-
-    //finalColor = vec4(PixelDeviation/1000,PixelDeviation/1000,PixelDeviation/1000,1.0);
-    //225
-    // if 0, then 255 is lit
-    // if 255 then 0 is lit
-
 }
