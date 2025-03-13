@@ -48,25 +48,16 @@ int main(void)
 
         // Move player with keys
         float moveSpeed = 2.0f;
-        if (IsKeyDown(KEY_W))
+        if (IsKeyDown(KEY_UP))
         {
             playerPosition.x += cosf(playerRotation) * moveSpeed;
             playerPosition.y += sinf(playerRotation) * moveSpeed;
         }
-        if (IsKeyDown(KEY_S))
+
+        if (IsKeyDown(KEY_DOWN))
         {
             playerPosition.x -= cosf(playerRotation) * moveSpeed;
             playerPosition.y -= sinf(playerRotation) * moveSpeed;
-        }
-        if (IsKeyDown(KEY_A))
-        {
-            playerPosition.x += cosf(playerRotation - PI / 2) * moveSpeed;
-            playerPosition.y += sinf(playerRotation - PI / 2) * moveSpeed;
-        }
-        if (IsKeyDown(KEY_D))
-        {
-            playerPosition.x += cosf(playerRotation + PI / 2) * moveSpeed;
-            playerPosition.y += sinf(playerRotation + PI / 2) * moveSpeed;
         }
 
         // Cast rays for each column
@@ -103,58 +94,15 @@ int main(void)
                     rayDistances[x] = distance;
                     hitWall = true;
 
-                    Color Distance = {0, 0, 0, 255}; // Initialize color
+                    // Normalize the distance to 0-255 range
+                    // Assuming maximum distance is 1000.0f (same as your default)
+                    float normalizedDistance = (distance / 300.0f) * 255.0f;
 
-                    // Process red channel
-                    if (distance > 255)
-                    {
-                        Distance.r = 255;
-                        distance -= 255;
-                    }
-                    else
-                    {
-                        Distance.r = (short)distance;
-                        distance = 0; // No need to continue once the distance is fully allocated
-                    }
+                    // Clamp to 0-255
+                    normalizedDistance = normalizedDistance > 255.0f ? 255.0f : normalizedDistance;
 
-                    // Process green channel if distance remains
-                    if (distance > 0)
-                    {
-                        if (distance > 255)
-                        {
-                            Distance.g = 255;
-                            distance -= 255;
-                        }
-                        else
-                        {
-                            Distance.g = (short)distance;
-                            distance = 0; // No need to continue once the distance is fully allocated
-                        }
-                    }
-
-                    // // Process blue channel if distance remains
-                    // if (distance > 0)
-                    // {
-                    //     if (distance > 255)
-                    //     {
-                    //         Distance.b = 255;
-                    //         distance -= 255;
-                    //     }
-                    //     else
-                    //     {
-                    //         Distance.b = (short)distance;
-                    //         distance = 0; // No need to continue once the distance is fully allocated
-                    //     }
-                    // }
-
-                    // Process alpha channel if distance remains
-                    if (distance > 0)
-                    {
-                        Distance.b = (short)distance; // Final remaining value
-                    }
-
-
-                    pixels[x] = Distance; // Store the result in the pixels array
+                    // Store only in red channel
+                    pixels[x] = (Color){(unsigned char)normalizedDistance, 0, 0, 255};
 
                     break;
                 }
@@ -168,8 +116,8 @@ int main(void)
             // If no wall was hit, set distance to maximum
             if (!hitWall)
             {
-                rayDistances[x] = 1000.0f;
-                pixels[x] = (Color){255, 255, 255, 255};
+                rayDistances[x] = 300.0f;
+                pixels[x] = (Color){255, 0, 0, 255}; // Maximum distance in red channel
             }
         }
 
